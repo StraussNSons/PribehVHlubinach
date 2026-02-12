@@ -1,0 +1,102 @@
+:: StoryTitle
+Pribeh v hlubinach
+
+
+:: StoryData
+{
+  "ifid": "CFF23C0B-1004-4191-87AF-64ED590DC097",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Start",
+  "zoom": 1
+}
+
+
+:: Obleces jsi Potapjeckou Masku {"position":"1300,400","size":"100,100"}
+Premislis co bis mohl udelat.co udelas
+
+[[Zapichnes jse Mecem->Umrel jsi]]
+[[Skocis z Ponorki]]
+
+
+
+:: Otocis se {"position":"1275,1000","size":"100,100"}
+Spatsis atlantidu ale i s Krakenem.Co udelas
+[[Wrhnes jse nanej]]
+[[Propliziz jse kolem nej]]
+
+
+:: Propliziz jse kolem nej {"position":"1525,1175","size":"100,100"}
+Znicehonic uwidis jak jse ti Kraken,Krakatize,naci dlouhi Hlubini Uhori,Morskidasi,Subatki,a Subaticerohati Klani.Wihral jsi.
+
+
+:: Prozkoumas ponorku {"position":"1100,375","size":"100,100"}
+Objevil jsi mec a Potapjeckou Masku.Co udelas
+[[Obleces jsi Potapjeckou Masku]]
+[[]]
+
+
+:: Pujdes hledat Atlantidu {"position":"1600,825","size":"100,100"}
+Zubatki si te vsimli a sautoci na tebe.Co udelas
+[[Zacnes jim utikat]]
+[[Ukazez jim gdo je pan]]
+
+
+:: Skocis z Ponorki {"position":"1425,500","size":"100,100"}
+Potapis jse nis a nis as do hlubin.Co udelas
+[[Zacnes hrabat v Pisku]]
+[[Zacnes chitat Ribi]]
+
+
+:: Start {"position":"900,450","size":"100,100"}
+Narodil jses v ponorce. Co udelas?
+
+[[Prozkoumas ponorku]]
+
+[[skocis z ponorky->Umrel jsi]]
+
+
+
+
+
+:: Ukazez jim gdo je pan {"position":"1425,925","size":"100,100"}
+S pomoci Mece si je wistrasil.Co udelas
+[[Otocis se]]
+[[Zustanes sedet]]
+
+
+:: Umrel jsi {"position":"1075,600","size":"100,100"}
+Umrel jsi
+
+[[Hrat znovu->Start]]
+
+
+:: Wrhnes jse nanej {"position":"1275,1125","size":"100,100"}
+Kraken te zabil
+[[Umrel jsi]] 
+
+
+:: Zacnes chitat Ribi {"position":"1550,625","size":"100,100"}
+Znicehonic jsi chitil Morskehodasa 
+
+[[Umrel jsi]] 
+
+
+:: Zacnes hrabat v Pisku {"position":"1425,625","size":"100,100"}
+Hrabani je welmi namahawi ale znicehoniz witahnes Papir na kterem je napsana Legenda o Atlantide.Co udelas
+[[Zacnes se posmiwat Slowu Kraken]]
+[[Pujdes hledat Atlantidu]]
+
+
+:: Zacnes jim utikat {"position":"1100,900","size":"100,100"}
+Znicehonic te chitila Past
+[[Umrel jsi]] 
+
+
+:: Zacnes se posmiwat Slowu Kraken {"position":"1200,800","size":"100,100"}
+Twi posmiwani saslechnou Zubaticerohati a sabijou te [[Umrel jsi]] 
+
+
+:: Zustanes sedet {"position":"900,1000","size":"100,100"}
+Umrel jsi nudou
+[[Umrel jsi]] 
