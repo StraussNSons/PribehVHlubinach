@@ -7,9 +7,39 @@ Pribeh v hlubinach
   "ifid": "CFF23C0B-1004-4191-87AF-64ED590DC097",
   "format": "SugarCube",
   "format-version": "2.37.3",
-  "start": "Start",
+  "start": "InitSettings",
+  "tag-colors": {
+    "nohud": "blue"
+  },
   "zoom": 1
 }
+
+
+:: InitSettings [nohud] {"position":"500,525","size":"100,100"}
+\:: Intro
+<div class="title-screen">
+	<h1>PŘÍBĚH V HLUBINÁCH</h1>
+  
+ 	<<button "🖥️ Cela obrazovka">>
+  		<<run GoFullscreen()>>
+        <<goto "Intro">>
+	<</button>>
+</div>
+
+
+
+:: Intro [nohud] {"position":"650,525","size":"100,100"}
+\:: Intro
+<div class="title-screen">
+	<h1>🎲 Nová  hra 🎲</h1>
+    Obtížnost:
+  	<<button "🙂 Normal">>
+    	<<goto "Start">>	<</button>>     <<button "💀 IronMan">>
+     	<<set $hp = 1>> 
+    	<<goto "Start">>
+	<</button>>
+</div>
+
 
 
 :: Obleces jsi Potapjeckou Masku {"position":"1300,400","size":"100,100"}
@@ -19,11 +49,16 @@ Premislis co bis mohl udelat.co udelas
 [[Skocis z Ponorki]]
 
 
-
 :: Otocis se {"position":"1275,1000","size":"100,100"}
 Spatsis atlantidu ale i s Krakenem.Co udelas
 [[Wrhnes jse nanej]]
 [[Propliziz jse kolem nej]]
+
+
+:: PassageHeader {"position":"725,125","size":"100,100"}
+<<if !tags().includes("nohud")>>
+<div id="hud" class="hud"><<HUD>></div>
+<</if>>
 
 
 :: Propliziz jse kolem nej {"position":"1525,1175","size":"100,100"}
@@ -56,7 +91,32 @@ Narodil jses v ponorce. Co udelas?
 [[skocis z ponorky->Umrel jsi]]
 
 
+:: StoryInit {"position":"725,300","size":"100,100"}
+<<cacheaudio "epic" "audio/EpicDnD.mp3">>
+<<cacheaudio "victory" "audio/Victory.mp3">>
 
+<<set $hp = 3>>
+<<set $maxHp = 3>>
+<<set $dead = false>>
+
+<<widget "HUD">> ŽIVOTY: <<print "❤️".repeat($hp) + "🤍".repeat($maxHp - $hp)>>
+<</widget>>
+
+
+<<widget "MinusZivot">>
+	<<set _n = (_args.length ? Number(_args[0]) : 1)>>
+	<<if isNaN(_n) or _n <= 0>><<set _n = 1>><</if>>
+
+	<<set $hp = Math.max(0, $hp - _n)>>
+
+	<<timed 0ms>>
+		<<replace "#hud">><<HUD>><</replace>>
+	<</timed>>
+
+	<<if $hp <= 0>>
+		<<set $dead = true>>
+	<</if>>
+<</widget>>
 
 
 :: Ukazez jim gdo je pan {"position":"1425,925","size":"100,100"}
@@ -73,13 +133,13 @@ Umrel jsi
 
 :: Wrhnes jse nanej {"position":"1275,1125","size":"100,100"}
 Kraken te zabil
-[[Umrel jsi]] 
+[[Umrel jsi]]
 
 
 :: Zacnes chitat Ribi {"position":"1550,625","size":"100,100"}
 Znicehonic jsi chitil Morskehodasa 
 
-[[Umrel jsi]] 
+[[Umrel jsi]]
 
 
 :: Zacnes hrabat v Pisku {"position":"1425,625","size":"100,100"}
@@ -90,13 +150,206 @@ Hrabani je welmi namahawi ale znicehoniz witahnes Papir na kterem je napsana Leg
 
 :: Zacnes jim utikat {"position":"1100,900","size":"100,100"}
 Znicehonic te chitila Past
-[[Umrel jsi]] 
+[[Umrel jsi]]
 
 
 :: Zacnes se posmiwat Slowu Kraken {"position":"1200,800","size":"100,100"}
-Twi posmiwani saslechnou Zubaticerohati a sabijou te [[Umrel jsi]] 
+Twi posmiwani saslechnou Zubaticerohati a sabijou te [[Umrel jsi]]
 
 
 :: Zustanes sedet {"position":"900,1000","size":"100,100"}
 Umrel jsi nudou
-[[Umrel jsi]] 
+[[Umrel jsi]]
+
+
+:: StoryScript [script]
+Config.history.maxStates = 1;
+
+window.GoFullscreen = function () {
+  const el = document.documentElement;
+
+  if (document.fullscreenElement) {
+    document.exitFullscreen?.();
+    return;
+  }
+
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if (req) req.call(el);
+};
+
+
+/* 1) Globální přesměrování všech interních přechodů */
+Config.navigation.override = function (passage) {
+  try {
+    if (State.getVar("$dead")) {
+      return "GameOver";
+    }
+  } catch (e) {}
+  return passage;
+};
+
+/* 2) Přejmenování všech interních odkazů, když je hráč mrtvý */
+$(document).on(":passagerender", function (ev) {
+  try {
+    if (!State.getVar("$dead")) return;
+
+    const $links = $(ev.content).find("a.link-internal");
+
+    // Změň text všech linků
+    $links.each(function () {
+      const $a = $(this);
+
+      // Pokud chceš zachovat ikonku, dej sem vlastní text
+      $a.text("☠️ Game Over");
+
+      // Volitelně: přidej CSS třídu pro styling
+      $a.addClass("dead-link");
+    });
+  } catch (e) {}
+});
+
+
+:: StoryStylesheet [stylesheet]
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap');
+
+h1, h2, h3 {
+  font-family: 'Cinzel', serif;
+}
+
+h1, h2 {
+  color: #e6d3a3;
+  text-shadow: 0 0 6px rgba(0,0,0,0.6);
+}
+
+.title-screen {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+/* ✅ TLAČÍTKA BLÍŽ K NADPISU */
+.title-screen h1 {
+  margin: 0 0 1.0rem 0; /* zmenší mezeru pod nadpisem */
+}
+
+/* ✅ STEJNÁ ŠÍŘKA + HEZKÝ STYL PRO <<button>> */
+.title-screen button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 280px;           /* 👈 stejné široké */
+  max-width: 85vw;        /* aby to na mobilu nepřetékalo */
+  padding: 0.7rem 1rem;
+
+  margin: 0.35rem 0;      /* menší mezera mezi tlačítky */
+  font-size: 1.05rem;
+
+  cursor: pointer;
+  border: 0;
+  border-radius: 4px;
+
+  background: #3b5fc4;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.title-screen button:hover {
+  background: #4b72e0;
+}
+
+.title {
+  font-size: 3rem;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  max-width: 38rem;
+}
+
+/* ✅ Responsivní základní velikost písma */
+html { font-size: 20px; }      /* desktop default */
+body { font-size: 1rem; }
+
+/* ✅ Přestaň zvětšovat UI globálně – to rozbije mobil */
+#ui-bar, #story { zoom: 1; }
+
+/* ✅ Tablet */
+@media (max-width: 900px) {
+  html { font-size: 18px; }
+  .title { font-size: 2.4rem; }
+  .subtitle { font-size: 1rem; max-width: 30rem; }
+
+  .title-screen button { width: 230px; } /* lehce menší */
+}
+
+/* ✅ Mobil */
+@media (max-width: 600px) {
+  html { font-size: 18px; }
+  .title { font-size: 2rem; }
+  .subtitle { font-size: 0.95rem; max-width: 24rem; }
+
+  .title-screen button { width: 220px; }
+}
+
+/* ✅ Extra malý mobil */
+@media (max-width: 380px) {
+  html { font-size: 15px; }
+  .title { font-size: 1.8rem; }
+
+  .title-screen button { width: 210px; }
+}
+
+/* Schovej sidebar */
+#ui-bar, #ui-bar-toggle { 
+  display: none !important; 
+}
+
+/* Zruš odsazení příběhu, které sidebar normálně zabírá */
+#story {
+  margin-left: 0 !important;
+}
+
+.hud {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  
+  opacity: 0.8;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 0.75rem 0;
+
+  font-size: 0.75rem;
+  text-align: center;
+
+  background: rgba(0.2,0.3,0.1,0.65);
+  
+  border: 1px solid rgba(230,211,163,0.05);
+  border-radius: 999px;
+  
+  backdrop-filter: blur(6px);
+}
+
+.dead-link {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+
+
+.passage {
+  text-align: left;      /* ať se ti to necentruje */
+  padding-left: 10vw;     /* ~2 % šířky obrazovky */
+  padding-right: 10vw;    /* volitelně, symetrie */
+  box-sizing: border-box;
+}
